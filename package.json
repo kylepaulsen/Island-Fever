@@ -1,0 +1,26 @@
+{
+    "name": "IslandFever",
+    "title": "IslandFever",
+    "description": "A game about survival on an island.",
+    "version": "0.0.1",
+    "author": {
+        "name": "Kyle Paulsen",
+        "email": "krazykylep@gmail.com",
+        "url": "http://www.kylepaulsen.com/"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://opensource.org/licenses/MIT"
+        }
+    ],
+    "devDependencies": {
+        "underscore": "~1.5.2",
+        "q": "~1.0.0",
+        "grunt": "~0.4.1",
+        "grunt-cli": "~0.1.7",
+        "grunt-contrib-jshint": "~0.8.0",
+        "grunt-contrib-watch": "~0.5.3",
+        "grunt-browserify": "~1.3.0"
+    }
+}
