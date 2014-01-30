@@ -17,7 +17,9 @@
     "devDependencies": {
         "underscore": "~1.5.2",
         "q": "~1.0.0",
+        "three": "~0.58.10",
         "grunt": "~0.4.1",
+        "brfs": "~0.0.9",
         "grunt-cli": "~0.1.7",
         "grunt-contrib-jshint": "~0.8.0",
         "grunt-contrib-watch": "~0.5.3",

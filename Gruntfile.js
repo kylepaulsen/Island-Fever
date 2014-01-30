@@ -6,6 +6,9 @@ module.exports = function(grunt) {
             dist: {
                 files: {
                     "build/islandFever.js": ["src/**/*.js"]
+                },
+                options: {
+                    transform: ["brfs"]
                 }
             }
         },
