@@ -3,6 +3,7 @@
 var THREE = require("three");
 
 var app = require("./app");
+var islandGen = require("./islandGen");
 
 var ui;
 var camera;
@@ -22,8 +23,22 @@ var setup = function() {
 
     document.body.appendChild(renderer.domElement);
 
-    ui = require("./ui");
-    ui.show("mainMenu");
+    app.setup({
+        newGame: function() {
+            console.log("Generating island...");
+            islandGen.generate("temp", "mySeed").then(function(result) {
+                console.log("Island saved!!!", result);
+            }, function(err) {
+                console.error("Could not save island...", err);
+            }).done();
+        }
+    }).then(function () {
+        ui = require("./ui");
+        ui.show("mainMenu");
+    }, function(err) {
+        // something went wrong.
+        console.err(err);
+    }).done();
 };
 
 var render = function() {
@@ -32,12 +47,6 @@ var render = function() {
 
     renderer.render(scene, camera);
 };
-
-app.setup({
-    newGame: function() {
-        console.log("NEW GAME");
-    }
-});
 
 setup();
 render();

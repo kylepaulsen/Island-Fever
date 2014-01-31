@@ -37,14 +37,13 @@ var UIManager = function() {
         currentUi = uiToShow;
     };
 
-    var pub = {
+    helpers.setProperty(window.app, "ui.add", add);
+    helpers.setProperty(window.app, "ui.show", show);
+
+    return {
         add: add,
         show: show
     };
-
-    window.app.ui = pub;
-
-    return pub;
 };
 
 module.exports = UIManager;
