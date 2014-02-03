@@ -36,6 +36,10 @@ var isJsObject = function(obj) {
     return Object.prototype.toString.call(obj) === "[object Object]";
 };
 
+var toRad = function(ang) {
+    return ang * Math.PI / 180;
+};
+
 // I'm trying to get as much performance out of this code as possible - Chrome and JSperf used.
 var makeZeroFillMatrix = function(width, height) {
     var mat = [];
@@ -61,5 +65,6 @@ module.exports = {
     listen: listen,
     setProperty: setProperty,
     isJsObject: isJsObject,
+    toRad: toRad,
     makeZeroFillMatrix: makeZeroFillMatrix
 };

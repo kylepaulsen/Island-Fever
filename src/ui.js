@@ -1,7 +1,13 @@
 "use strict";
 
-var uiManager = require("./uiManager")();
+var uiManager = require("./uiManager");
+var mainMenu = require("./mainMenu");
 
-uiManager.add(require("./mainMenu"));
+var ui = function() {
+    var allUi = uiManager();
+    allUi.add(mainMenu);
 
-module.exports = uiManager;
+    return allUi;
+};
+
+module.exports = ui;

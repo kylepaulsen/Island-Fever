@@ -4,6 +4,9 @@ var _ = require("underscore");
 
 var helpers = require("./helpers");
 var keyvalDB = require("./keyvalDB");
+var loadTextures = require("./loadTextures");
+
+require("../vendor/detectMobileBrowser.min");
 
 var setupAndOpenDBs = function() {
     var db = keyvalDB("IslandFever", [
@@ -18,6 +21,7 @@ var setup = function(moreFunctions) {
     moreFunctions = moreFunctions || {};
     window.app = {};
     _.extend(window.app, moreFunctions);
+    loadTextures();
     return setupAndOpenDBs();
 };
 

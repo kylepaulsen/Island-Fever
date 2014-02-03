@@ -24,10 +24,14 @@ var UIManager = function() {
         uiDictionary[el.id] = el;
     };
 
-    var show = function(id) {
+    var hide = function() {
         if (currentUi) {
             currentUi.style.display = "none";
         }
+    };
+
+    var show = function(id) {
+        hide();
         var uiToShow = uiDictionary[id];
         if (uiToShow) {
             uiToShow.style.display = "block";
@@ -37,12 +41,15 @@ var UIManager = function() {
         currentUi = uiToShow;
     };
 
+
     helpers.setProperty(window.app, "ui.add", add);
     helpers.setProperty(window.app, "ui.show", show);
+    helpers.setProperty(window.app, "ui.hide", hide);
 
     return {
         add: add,
-        show: show
+        show: show,
+        hide: hide
     };
 };
 

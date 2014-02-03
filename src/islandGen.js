@@ -21,10 +21,10 @@ var elevationChangerMaxXStartPos = Math.floor(7*numTileColumns/8);
 var elevationChangerMaxYStartPos = Math.floor(7*numTileRows/8);
 var elevationChangers;
 var moveChoices = [
-    {x: 0, y: 1},
-    {x: 0, y: -1},
-    {x: 1, y: 0},
     {x: -1, y: 0},
+    {x: 0, y: -1},
+    {x: 0, y: 1},
+    {x: 1, y: 0}
 ];
 var numMoveChoices = moveChoices.length;
 // ISLAND GEN STATIC VARS ================
@@ -118,12 +118,12 @@ var enlarge = function() {
     var oldTileMat = tileMat;
     var x = 0;
     var y;
-    tileMat = helpers.makeZeroFillMatrix(numTileColumns*2, numTileRows*2);
+    tileMat = helpers.makeZeroFillMatrix(numTileColumns * 2, numTileRows * 2);
     while (x < numTileColumns) {
         y = 0;
         while (y < numTileRows) {
-            var twox = x << 1;
-            var twoy = y << 1;
+            var twox = x * 2;
+            var twoy = y * 2;
             tileMat[twox][twoy] = oldTileMat[x][y];
             tileMat[twox+1][twoy] = oldTileMat[x][y];
             tileMat[twox][twoy+1] = oldTileMat[x][y];
@@ -133,8 +133,8 @@ var enlarge = function() {
         ++x;
     }
 
-    numTileColumns *= 2;
-    numTileRows *= 2;
+    numTileColumns = numTileColumns * 2;
+    numTileRows = numTileRows * 2;
 };
 
 var isInBounds = function(x, y) {
@@ -205,7 +205,9 @@ var storeIsland = function(name, seed) {
     var mapInfo = {
         seed: seed,
         created: Date.now(),
-        data: data.buffer
+        data: data.buffer,
+        rows: numTileRows,
+        cols: numTileColumns
     };
     return window.app.db.maps.upsert(name, mapInfo);
 };
@@ -213,6 +215,8 @@ var storeIsland = function(name, seed) {
 var generateIsland = function(name, seed) {
     randomGenerator = seededRandom(seed);
     heightNoise = perlinNoise(randomGenerator, 20, 20);
+    numTileColumns = Math.floor(numColumns / 8);
+    numTileRows = Math.floor(numRows / 8);
     tileMat = helpers.makeZeroFillMatrix(numTileColumns, numTileRows);
     elevationChangers = [];
     elevationChangers.length = numElevationChangers;

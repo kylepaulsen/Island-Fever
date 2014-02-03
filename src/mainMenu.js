@@ -6,9 +6,14 @@ var helpers = require("./helpers");
 
 var el = helpers.html2Node(fs.readFileSync("html/MainMenu.html"));
 
-var newGame = window.app.newGame;
+var newGame = function() {
+    window.app.newGame();
+    window.app.ui.hide();
+};
 var loadGame = function() {
-    window.app.ui.show("loadGame");
+    //window.app.ui.show("loadGame");
+    window.app.loadGame("temp");
+    window.app.ui.hide();
 };
 var options = function() {
     window.app.ui.show("options");
