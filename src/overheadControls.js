@@ -10,9 +10,15 @@ var overheadControls = function(camera) {
     var rotationAngle = 0;
     var height = 10;
     var lastMousePos = {};
-    var isMouseDown = false;
+    var isLeftMouseDown = false;
+    var isRightMouseDown = false;
     var radiusOffset = 0;
     var usesTouchEvents = false;
+    var mouseButtons = {
+        left: 1,
+        middle: 2,
+        right: 3
+    };
 
     var container = new THREE.Object3D();
     container.add(camera);
@@ -36,6 +42,20 @@ var overheadControls = function(camera) {
         setRotation(rotationAngle);
     };
 
+    var mouseWheelHandler = function(e) {
+        // delta will be -1 when you scroll towards yourself and 1 when you scroll away.
+        var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+
+        var newHeight = height - delta;
+        newHeight = Math.max(Math.min(newHeight, 120), 10);
+        setHeight(newHeight);
+    };
+
+    var disableContextMenu = function(e) {
+        e.preventDefault();
+        return false;
+    };
+
     var mouseDown = function(event) {
         if (usesTouchEvents) {
             event.preventDefault();
@@ -45,16 +65,22 @@ var overheadControls = function(camera) {
         if (event.targetTouches) {
             lastMousePos.x = event.targetTouches[0].clientX;
             lastMousePos.y = event.targetTouches[0].clientY;
+            isLeftMouseDown = true;
         }
-        isMouseDown = true;
+        if (event.which === mouseButtons.left) {
+            isLeftMouseDown = true;
+        } else if (event.which === mouseButtons.right) {
+            isRightMouseDown = true;
+        }
     };
 
     var mouseUp = function(event) {
-        isMouseDown = false;
+        isLeftMouseDown = false;
+        isRightMouseDown = false;
     };
 
     var mouseMove = function(event) {
-        if(!isMouseDown) {
+        if(!isLeftMouseDown && !isRightMouseDown) {
             return false;
         }
         if (usesTouchEvents) {
@@ -74,29 +100,42 @@ var overheadControls = function(camera) {
         var deltaX = mouseXDiff / 10 * speed;
         var deltaY = mouseYDiff / 10 * speed;
 
-        container.position.x += deltaX * Math.cos(rotationAngle);
-        container.position.z -= deltaX * Math.sin(rotationAngle);
+        if (isLeftMouseDown) {
+            container.position.x += deltaX * Math.cos(rotationAngle);
+            container.position.z -= deltaX * Math.sin(rotationAngle);
 
-        container.position.z += deltaY * Math.cos(rotationAngle);
-        container.position.x += deltaY * Math.sin(rotationAngle);
+            container.position.z += deltaY * Math.cos(rotationAngle);
+            container.position.x += deltaY * Math.sin(rotationAngle);
+        } else if (isRightMouseDown) {
+            var rotationAmount = mouseXDiff / 100;
+            setRotation(rotationAngle + rotationAmount);
+        }
 
         lastMousePos.x = x;
         lastMousePos.y = y;
     };
 
-    setHeight(height);
-    setPitch(pitchAngle);
+    var setup = function() {
+        setHeight(height);
+        setPitch(pitchAngle);
 
-    if ("ontouchstart" in document.documentElement) {
-        usesTouchEvents = true;
-        document.addEventListener("touchstart", mouseDown);
-        document.addEventListener("touchend", mouseUp);
-        document.addEventListener("touchmove", mouseMove);
-    } else {
-        document.addEventListener("mousedown", mouseDown);
-        document.addEventListener("mouseup", mouseUp);
-        document.addEventListener("mousemove", mouseMove);
-    }
+        if ("ontouchstart" in document.documentElement) {
+            usesTouchEvents = true;
+            document.addEventListener("touchstart", mouseDown);
+            document.addEventListener("touchend", mouseUp);
+            document.addEventListener("touchmove", mouseMove);
+        } else {
+            document.addEventListener("mousedown", mouseDown);
+            document.addEventListener("mouseup", mouseUp);
+            document.addEventListener("mousemove", mouseMove);
+
+            document.addEventListener("mousewheel", mouseWheelHandler, false);
+            document.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
+            document.addEventListener("contextmenu", disableContextMenu, false);
+        }
+    };
+
+    setup();
 
     return {
         speed: speed,

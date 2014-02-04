@@ -19,18 +19,18 @@ var renderer;
 var rendererWidth = window.innerWidth;
 var rendererHeight = window.innerHeight;
 
+var loadGame = function(name) {
+    island.load(name);
+};
+
 var newGame = function() {
     console.log("Generating island...");
     islandGen.generate("temp", "1").then(function(result) {
         console.log("Island saved!!!", result);
-        island.load("temp");
+        loadGame("temp");
     }, function(err) {
         console.error("Could not save island...", err);
     }).done();
-};
-
-var loadGame = function(name) {
-    island.load(name);
 };
 
 var onWindowResize = function() {
@@ -42,27 +42,7 @@ var onWindowResize = function() {
 var setup = function() {
     camera = new THREE.PerspectiveCamera(75, rendererWidth/rendererHeight, 1, 10000);
     scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x888888, 1, 120);
-
-    cameraControls = overheadControls(camera);
-    cameraControls.setHeight(30);
-    cameraControls.setRotation(helpers.toRad(45));
-    cameraControls.setPitch(helpers.toRad(-40));
-    /*cameraControls.setHeight(200);
-    cameraControls.setRotation(helpers.toRad(0));
-    cameraControls.setPitch(helpers.toRad(-90));*/
-    scene.add(cameraControls.object);
-
-    var pointLight = new THREE.PointLight(0xFFFFFF);
-    pointLight.position.x = 100;
-    pointLight.position.y = 100;
-    pointLight.position.z = -100;
-    cameraControls.object.add(pointLight);
-
-    var ambientLight = new THREE.AmbientLight(0x666666);
-    scene.add(ambientLight);
-
-    island = world(scene);
+    //scene.fog = new THREE.Fog(0x888888, 1, 120);
 
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(0x888888, 1);
@@ -70,6 +50,26 @@ var setup = function() {
 
     document.body.appendChild(renderer.domElement);
     window.addEventListener("resize", onWindowResize, false);
+
+    cameraControls = overheadControls(camera);
+    cameraControls.setHeight(50);
+    cameraControls.setRotation(helpers.toRad(135));
+    cameraControls.setPitch(helpers.toRad(-40));
+    /*cameraControls.setHeight(200);
+    cameraControls.setRotation(helpers.toRad(0));
+    cameraControls.setPitch(helpers.toRad(-90));*/
+    scene.add(cameraControls.object);
+
+    var pointLight = new THREE.PointLight(0xFFFFFF);
+    pointLight.position.x = -100;
+    pointLight.position.y = 100;
+    pointLight.position.z = 100;
+    cameraControls.object.add(pointLight);
+
+    var ambientLight = new THREE.AmbientLight(0x666666);
+    scene.add(ambientLight);
+
+    island = world(scene);
 
     app.setup({
         newGame: newGame,

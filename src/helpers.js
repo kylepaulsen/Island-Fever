@@ -2,6 +2,10 @@
 
 var _ = require("underscore");
 
+var get = function(query) {
+    return document.querySelectorAll(query);
+};
+
 var createEl = function(name) {
     return document.createElement(name);
 };
@@ -60,6 +64,7 @@ var makeZeroFillMatrix = function(width, height) {
 };
 
 module.exports = {
+    get: get,
     createEl: createEl,
     html2Node: html2Node,
     listen: listen,

@@ -12,6 +12,8 @@ var chunk = function(data) {
     var voxelSize = data.voxelSize;
     var landAmplitude = data.landAmplitude;
     var sandHeight = data.sandHeight * landAmplitude;
+    var rockHeight = data.rockHeight * landAmplitude;
+    var snowHeight = data.snowHeight * landAmplitude;
 
     // current voxel's position in the chunk.
     var blockPosInChunk = {x: chunkSize, z: chunkSize};
@@ -38,7 +40,7 @@ var chunk = function(data) {
         geom.faces.push(face);
     };
 
-    var applyTexture = function(id) {
+    var applyTexture = function(id, flip) {
         var step = 0.0625;
         var u = (id % 16) * step;
         var v = 1 - (Math.floor(id / 16) * step);
@@ -47,17 +49,24 @@ var chunk = function(data) {
         corners[1] = new THREE.Vector2(u, v);
         corners[2] = new THREE.Vector2(u+step, v-step);
         corners[3] = new THREE.Vector2(u+step, v);
-        geom.faceVertexUvs[0].push([corners[0], corners[1], corners[2]]);
-        geom.faceVertexUvs[0].push([corners[1], corners[3], corners[2]]);
+        if (flip) {
+            geom.faceVertexUvs[0].push([corners[1], corners[0], corners[3]]);
+            geom.faceVertexUvs[0].push([corners[0], corners[2], corners[3]]);
+        } else {
+            geom.faceVertexUvs[0].push([corners[0], corners[1], corners[2]]);
+            geom.faceVertexUvs[0].push([corners[1], corners[3], corners[2]]);
+        }
     };
 
     var getBlockTextureType = function(x, z, wall) {
         var y = getHeight(x, z);
         var textureTypes = {
             grass: 0,
-            dirt: 126,
+            //dirt: 126,
+            dirt: 3,
             sand: 18,
-            rock: 19
+            rock: 19,
+            snow: 66
         };
         var wallConversions = {};
         wallConversions[textureTypes.grass] = textureTypes.dirt;
@@ -66,6 +75,12 @@ var chunk = function(data) {
 
         if (y < sandHeight) {
             textureType = textureTypes.sand;
+        }
+        if (y > rockHeight) {
+            textureType = textureTypes.rock;
+        }
+        if (y > snowHeight) {
+            textureType = textureTypes.snow;
         }
 
         /*if (rocksNoise.getHeight(x, z) > 0.8) {
@@ -131,7 +146,7 @@ var chunk = function(data) {
                         textureType = getBlockTextureType(blockPosInWorld.x, blockPosInWorld.z, true);
                     }
                     addFace(corners, [0, 0, normalDirection]);
-                    applyTexture(textureType);
+                    applyTexture(textureType, sHeight < curHeight);
                 }
 
                 // east wall
@@ -150,7 +165,7 @@ var chunk = function(data) {
                         textureType = getBlockTextureType(blockPosInWorld.x, blockPosInWorld.z, true);
                     }
                     addFace(corners, [normalDirection, 0, 0]);
-                    applyTexture(textureType);
+                    applyTexture(textureType, eHeight < curHeight);
                 }
 
                 // add other features to this block

@@ -3,6 +3,7 @@
 var _ = require("underscore");
 
 var chunk = require("./chunk");
+var minimap = require("./minimap");
 
 var world = function(scene) {
     // chunkSize * chunkSize = number of voxels per chunk.
@@ -18,11 +19,14 @@ var world = function(scene) {
     // keepZoneSize * keepZoneSize = area of chunks that will stay loaded.
     var keepZoneSize = window.isMobile ? 13 : 21;
     // How much height variation the land has.
-    var landAmplitude = 50;
-    // the percentage height where sand shows up.
-    var sandHeight = 0.2;
+    var landAmplitude = 100;
+    // the percentage height where other block types show up.
+    var sandHeight = 0.3;
+    var rockHeight = 1;
+    var snowHeight = 1;
 
     var mapData;
+    var smallMap = minimap();
     var heightmap;
     var middleChunk;
     var loadedChunks = {};
@@ -34,6 +38,13 @@ var world = function(scene) {
             mapData = result;
             heightmap = new Uint8Array(mapData.data);
             middleChunk = {x: 0, y: 0};
+            smallMap.draw({
+                heightmap: heightmap,
+                rows: mapData.rows,
+                cols: mapData.cols,
+                sandHeight: sandHeight,
+                landAmplitude: landAmplitude
+            });
         }, function(e) {
             console.error("Failed to load map: "+name, e);
         }).done();
@@ -90,6 +101,8 @@ var world = function(scene) {
                 voxelSize: voxelSize,
                 landAmplitude: landAmplitude,
                 sandHeight: sandHeight,
+                rockHeight: rockHeight,
+                snowHeight: snowHeight,
                 heightmap: heightmap,
                 heightmapRows: mapData.rows,
                 heightmapCols: mapData.heightmapCols
