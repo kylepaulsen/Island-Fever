@@ -9,7 +9,7 @@ var UIManager = function() {
 
     var add = function(uiObj) {
         var el = uiObj.el;
-        helpers.listen(el, "click", function(evt) {
+        el.addEventListener(helpers.clickOrTouchEvent, function(evt) {
             var target = evt.target;
             var action = target.dataset.action;
             if (action) {

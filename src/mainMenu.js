@@ -7,13 +7,13 @@ var helpers = require("./helpers");
 var el = helpers.html2Node(fs.readFileSync("html/MainMenu.html"));
 
 var newGame = function() {
-    window.app.newGame();
     window.app.ui.hide();
+    window.app.newGame();
 };
 var loadGame = function() {
     //window.app.ui.show("loadGame");
-    window.app.loadGame("temp");
     window.app.ui.hide();
+    window.app.loadGame("temp");
 };
 var options = function() {
     window.app.ui.show("options");

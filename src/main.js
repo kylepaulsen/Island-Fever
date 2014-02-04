@@ -49,6 +49,8 @@ var setup = function() {
     renderer.setSize(rendererWidth, rendererHeight);
 
     document.body.appendChild(renderer.domElement);
+    // this hack makes sure the canvas never "scrolls" off the screen.
+    renderer.domElement.style.position = "fixed";
     window.addEventListener("resize", onWindowResize, false);
 
     cameraControls = overheadControls(camera);

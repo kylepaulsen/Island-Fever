@@ -6,6 +6,8 @@ var get = function(query) {
     return document.querySelectorAll(query);
 };
 
+var clickOrTouchEvent = "ontouchstart" in document.documentElement ? "touchstart" : "click";
+
 var createEl = function(name) {
     return document.createElement(name);
 };
@@ -14,10 +16,6 @@ var html2Node = function(HTMLstring) {
     var temp = createEl("div");
     temp.innerHTML = HTMLstring;
     return temp.children[0];
-};
-
-var listen = function(el, type, func) {
-    el.addEventListener(type, func, false);
 };
 
 var setProperty = function(object, dotPath, value) {
@@ -65,9 +63,9 @@ var makeZeroFillMatrix = function(width, height) {
 
 module.exports = {
     get: get,
+    clickOrTouchEvent: clickOrTouchEvent,
     createEl: createEl,
     html2Node: html2Node,
-    listen: listen,
     setProperty: setProperty,
     isJsObject: isJsObject,
     toRad: toRad,
