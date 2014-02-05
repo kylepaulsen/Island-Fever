@@ -8,17 +8,21 @@ var perlinNoise = require("../vendor/perlinNoise");
 // This file has some weird code, I know. Performance is the #1 thing on my mind.
 
 // ISLAND GEN STATIC VARS ================
-var numElevationChangers = 5000;
-var elevationChangerLife = 100;
+var numElevationChangers = 3000;
+var elevationChangerLife = 50;
 var tileMat;
 var numColumns = 960;
 var numRows = 960;
 var numTileColumns = Math.floor(numColumns / 8);
 var numTileRows = Math.floor(numRows / 8);
-var elevationChangerMinXStartPos = Math.floor(3 * numTileColumns / 16);
-var elevationChangerMinYStartPos = Math.floor(3 * numTileRows / 16);
-var elevationChangerMaxXStartPos = Math.floor(13 * numTileColumns / 16);
-var elevationChangerMaxYStartPos = Math.floor(13* numTileRows / 16);
+var eleChangerStartColumnsDivisor = 6;
+var eleChangerStartRowsDivisor = 6;
+var maxPossibleRegionsToRemove = 5;
+var regionSize = {
+    x: numTileColumns / eleChangerStartColumnsDivisor,
+    y: numTileRows / eleChangerStartRowsDivisor
+};
+var validEleChangerStartRegions;
 var elevationChangers;
 var moveChoices = [
     {x: -1, y: 0},
@@ -36,13 +40,50 @@ var randInt = function(low, high){
     return Math.floor(randomGenerator.random()*(high-low+1))+low;
 };
 
+var choseEleChangerStartRegions = function() {
+    var x = eleChangerStartColumnsDivisor - 1;
+    var y = eleChangerStartRowsDivisor - 1;
+    validEleChangerStartRegions = [];
+    while (x-- > 0) {
+        while (y-- > 0) {
+            if (x > 0 && y > 0) {
+                validEleChangerStartRegions.push({x: x, y: y});
+            }
+        }
+        y = eleChangerStartRowsDivisor - 1;
+    }
+    var numRegionsToRemove = randInt(0, maxPossibleRegionsToRemove);
+    while (numRegionsToRemove-- > 0) {
+        var removeAt = randInt(0, validEleChangerStartRegions.length - 1);
+        validEleChangerStartRegions.splice(removeAt, 1);
+    }
+    var startPositions = [];
+    var t = validEleChangerStartRegions.length;
+    while (t-- > 0) {
+        var region = validEleChangerStartRegions[t];
+        startPositions.push({
+            xStart: Math.floor(region.x * regionSize.x),
+            xEnd: Math.floor((region.x + 1) * regionSize.x) - 1,
+            yStart: Math.floor(region.y * regionSize.y),
+            yEnd: Math.floor((region.y + 1) * regionSize.y) - 1
+        });
+    }
+    validEleChangerStartRegions = startPositions;
+};
+
+var getStartPosForElevationChanger = function() {
+    var regionToSpawnIn = randInt(0, validEleChangerStartRegions.length - 1);
+    var region = validEleChangerStartRegions[regionToSpawnIn];
+    return {
+        x: randInt(region.xStart, region.xEnd),
+        y: randInt(region.yStart, region.yEnd)
+    };
+};
+
 // using prototype for performance.
 var ElevationChanger = function(life) {
     this.life = life;
-    this.pos = {
-        x: randInt(elevationChangerMinXStartPos, elevationChangerMaxXStartPos),
-        y: randInt(elevationChangerMinYStartPos, elevationChangerMaxYStartPos)
-    };
+    this.pos = getStartPosForElevationChanger();
     // inc initial spot.
     ++tileMat[this.pos.x][this.pos.y];
 };
@@ -170,7 +211,7 @@ var isInBounds = function(x, y) {
 
 var boxBlur = function(px, py) {
     var height = tileMat[px][py];
-    var blurRadius = Math.floor((1 - height) * 4) + 2;
+    var blurRadius = Math.floor((1 - height) * 5) + 2;
     var sum = 0;
     var num = 0;
     var lowerBound = -blurRadius+1;
@@ -242,6 +283,7 @@ var generateIsland = function(name, seed) {
     numTileColumns = Math.floor(numColumns / 8);
     numTileRows = Math.floor(numRows / 8);
     tileMat = helpers.makeZeroFillMatrix(numTileColumns, numTileRows);
+    choseEleChangerStartRegions();
     elevationChangers = [];
     elevationChangers.length = numElevationChangers;
     var t = 0;

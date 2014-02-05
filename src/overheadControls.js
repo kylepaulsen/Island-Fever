@@ -132,6 +132,18 @@ var overheadControls = function(camera) {
             document.addEventListener("mousewheel", mouseWheelHandler, false);
             document.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
             document.addEventListener("contextmenu", disableContextMenu, false);
+
+            /*
+            document.addEventListener("keydown", function(e) {
+                if (e.which === 189 || e.which === 79) {
+                    setHeight(height + 1);
+                } else if (e.which === 187 || e.which === 80) {
+                    setHeight(height - 1);
+                } else if (e.which === 49) {
+                    window.app.newGame(Math.random());
+                }
+            });
+            */
         }
     };
 
