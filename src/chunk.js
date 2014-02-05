@@ -31,12 +31,22 @@ var chunk = function(data) {
         return vertIndices[vertId];
     };
 
-    var addFace = function(corners, normal) {
+    var addFace = function(corners, normal, colors) {
         var face = new THREE.Face3(corners[0], corners[1], corners[2]);
         face.normal.set(normal[0], normal[1], normal[2]);
+        if (colors) {
+            face.vertexColors[0] = new THREE.Color(colors[0]);
+            face.vertexColors[1] = new THREE.Color(colors[1]);
+            face.vertexColors[2] = new THREE.Color(colors[3]);
+        }
         geom.faces.push(face);
         face = new THREE.Face3(corners[1], corners[3], corners[2]);
         face.normal.set(normal[0], normal[1], normal[2]);
+        if (colors) {
+            face.vertexColors[0] = new THREE.Color(colors[1]);
+            face.vertexColors[1] = new THREE.Color(colors[2]);
+            face.vertexColors[2] = new THREE.Color(colors[3]);
+        }
         geom.faces.push(face);
     };
 
@@ -106,10 +116,11 @@ var chunk = function(data) {
     };
 
     var createMesh = function() {
-        /*jshint maxstatements: 100 */
+        /*jshint maxstatements: 100, maxcomplexity: 20 */
         while (blockPosInChunk.z-- > 0) {
             while (blockPosInChunk.x-- > 0) {
                 var corners = [];
+                var colors = [0xffffff, 0xffffff, 0xffffff, 0xffffff];
                 var normalDirection;
                 var textureType = 0;
 
@@ -118,6 +129,44 @@ var chunk = function(data) {
                     z: chunkZ * chunkSize + blockPosInChunk.z};
                 // y coord of block in global opengl space
                 var curHeight = getHeight(blockPosInWorld.x, blockPosInWorld.z);
+                var sHeight = getHeight(blockPosInWorld.x, blockPosInWorld.z + 1);
+                var eHeight = getHeight(blockPosInWorld.x + 1, blockPosInWorld.z);
+                var nHeight = getHeight(blockPosInWorld.x, blockPosInWorld.z - 1);
+                var wHeight = getHeight(blockPosInWorld.x - 1, blockPosInWorld.z);
+                var nwHeight = getHeight(blockPosInWorld.x - 1, blockPosInWorld.z - 1);
+                var swHeight = getHeight(blockPosInWorld.x - 1, blockPosInWorld.z + 1);
+                var seHeight = getHeight(blockPosInWorld.x + 1, blockPosInWorld.z + 1);
+                var neHeight = getHeight(blockPosInWorld.x + 1, blockPosInWorld.z - 1);
+
+                if (nHeight > curHeight) {
+                    colors[0] -= 0x333333;
+                    colors[3] -= 0x333333;
+                }
+                if (eHeight > curHeight) {
+                    colors[2] -= 0x333333;
+                    colors[3] -= 0x333333;
+                }
+                if (sHeight > curHeight) {
+                    colors[2] -= 0x333333;
+                    colors[1] -= 0x333333;
+                }
+                if (wHeight > curHeight) {
+                    colors[0] -= 0x333333;
+                    colors[1] -= 0x333333;
+                }
+                if (nwHeight > curHeight) {
+                    colors[0] -= 0x333333;
+                }
+                if (swHeight > curHeight) {
+                    colors[1] -= 0x333333;
+                }
+                if (seHeight > curHeight) {
+                    colors[2] -= 0x333333;
+                }
+                if (neHeight > curHeight) {
+                    colors[3] -= 0x333333;
+                }
+
                 // x, z coords of block in chunk opengl space
                 var blockPosInOGL = {x: blockPosInChunk.x * voxelSize, z: blockPosInChunk.z * voxelSize};
 
@@ -127,11 +176,9 @@ var chunk = function(data) {
                 corners[2] = putVert(blockPosInOGL.x + voxelSize, curHeight, blockPosInOGL.z);
                 corners[3] = putVert(blockPosInOGL.x + voxelSize, curHeight, blockPosInOGL.z + voxelSize);
 
-                addFace(corners, [0, 1, 0]);
+                addFace(corners, [0, 1, 0], colors);
                 applyTexture(getBlockTextureType(blockPosInWorld.x, blockPosInWorld.z));
 
-                // south wall
-                var sHeight = getHeight(blockPosInWorld.x, blockPosInWorld.z + 1);
                 if (sHeight !== curHeight) {
                     corners[0] = putVert(blockPosInOGL.x, curHeight, blockPosInOGL.z + voxelSize);
                     corners[1] = putVert(blockPosInOGL.x, sHeight, blockPosInOGL.z + voxelSize);
@@ -149,8 +196,6 @@ var chunk = function(data) {
                     applyTexture(textureType, sHeight < curHeight);
                 }
 
-                // east wall
-                var eHeight = getHeight(blockPosInWorld.x + 1, blockPosInWorld.z);
                 if (eHeight !== curHeight) {
                     corners[0] = putVert(blockPosInOGL.x + voxelSize, curHeight, blockPosInOGL.z + voxelSize);
                     corners[1] = putVert(blockPosInOGL.x + voxelSize, eHeight, blockPosInOGL.z + voxelSize);
@@ -185,8 +230,10 @@ var chunk = function(data) {
 
         //return new THREE.Mesh(geom, new THREE.MeshBasicMaterial({wireframe: true, color: 0xff0000}));
         //return new THREE.Mesh(geom, new THREE.MeshBasicMaterial({map: terrainTexture}));
-        return new THREE.Mesh(geom,
-            new THREE.MeshLambertMaterial({map: window.app.textures.terrain}));
+        return new THREE.Mesh(geom, new THREE.MeshLambertMaterial({
+            map: window.app.textures.terrain,
+            vertexColors: THREE.VertexColors
+        }));
     };
 
     return createMesh();

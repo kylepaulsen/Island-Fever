@@ -23,6 +23,11 @@ var overheadControls = function(camera) {
     var container = new THREE.Object3D();
     container.add(camera);
 
+    var setXZ = function(x, z) {
+        container.position.x = x;
+        container.position.z = z;
+    };
+
     var setHeight = function(h) {
         height = h;
         camera.position.y = height;
@@ -152,6 +157,7 @@ var overheadControls = function(camera) {
     return {
         speed: speed,
         setPitch: setPitch,
+        setXZ: setXZ,
         setHeight: setHeight,
         setRotation: setRotation,
         object: container

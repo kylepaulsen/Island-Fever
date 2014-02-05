@@ -2,6 +2,7 @@
 
 var THREE = require("../vendor/three");
 var _ = require("underscore");
+var q = require("q");
 
 var chunk = require("./chunk");
 var minimap = require("./minimap");
@@ -32,7 +33,11 @@ var world = function(scene) {
     var heightmap;
     var middleChunk;
     var loadedChunks = {};
+    var validChunks = {};
     var waterMesh;
+
+    var firstRender = true;
+    var renderDefer;
 
     var makeWaterLevel = function(rows, cols) {
         var extraWaterSize = 300;
@@ -46,11 +51,11 @@ var world = function(scene) {
 
         var waterGeometry = new THREE.PlaneGeometry(waterCols, waterRows);
         var waterMesh1 = new THREE.Mesh(waterGeometry,
-            new THREE.MeshBasicMaterial({map: waterTexture, transparent: true, opacity: 0.7}));
+            new THREE.MeshBasicMaterial({map: waterTexture, transparent: true, opacity: 0.5}));
         var waterMesh2 = new THREE.Mesh(waterGeometry,
-            new THREE.MeshBasicMaterial({map: waterTexture, transparent: true, opacity: 0.7}));
+            new THREE.MeshBasicMaterial({color: 0x479F94, transparent: true, opacity: 0.5}));
         var waterMesh3 = new THREE.Mesh(waterGeometry,
-            new THREE.MeshBasicMaterial({map: waterTexture}));
+            new THREE.MeshBasicMaterial({color: 0x479F94}));
         waterMesh1.rotateX(-Math.PI/2);
         waterMesh1.position.y = landAmplitude * waterHeight - (voxelSize / 2);
         waterMesh1.position.x = cols * voxelSize / 2 - extraWaterSize / 2;
@@ -65,6 +70,8 @@ var world = function(scene) {
     var load = function(name) {
         // remove all chunks
         findAndRemoveChunksOutsideKeepZone(Infinity, Infinity);
+        firstRender = true;
+        renderDefer = q.defer();
         window.app.db.maps.get(name).then(function(result) {
             mapData = result;
             if (waterMesh) {
@@ -73,6 +80,7 @@ var world = function(scene) {
             waterMesh = makeWaterLevel(mapData.rows, mapData.cols);
             scene.add(waterMesh);
             heightmap = new Uint8Array(mapData.data);
+            computeValidChunks();
             middleChunk = {x: 0, y: 0};
             smallMap.draw({
                 heightmap: heightmap,
@@ -81,9 +89,24 @@ var world = function(scene) {
                 waterHeight: waterHeight,
                 landAmplitude: landAmplitude
             });
+            renderDefer.notify(10);
         }, function(e) {
             console.error("Failed to load map: "+name, e);
-        }).done();
+        });
+        return renderDefer.promise;
+    };
+
+    var computeValidChunks = function() {
+        var x = Math.ceil(mapData.cols / chunkSize);
+        var maxy = Math.ceil(mapData.rows / chunkSize);
+        var y = maxy;
+        validChunks = {};
+        while (x-- > 0) {
+            while (y-- > 0) {
+                validChunks[x+","+y] = true;
+            }
+            y = maxy;
+        }
     };
 
     var parseChunkCoords = function(id) {
@@ -124,11 +147,18 @@ var world = function(scene) {
 
     var makeUnmadeChunks = function(chunksToMake) {
         if (chunksToMake.length <= 0) {
+            //console.timeEnd("genChunks");
+            firstRender = false;
+            renderDefer.resolve();
             return;
         }
+        //console.time("genChunks");
+        if (firstRender) {
+            var totalChunks = chunkGroupSize * chunkGroupSize;
+            renderDefer.notify(90 * (totalChunks - chunksToMake.length) / totalChunks + 10);
+        }
         var chunkId = chunksToMake.pop();
-        if (!loadedChunks[chunkId]) {
-            //console.log("Making new chunk: " + chunkId);
+        if (validChunks[chunkId] && !loadedChunks[chunkId]) {
             var newChunkCoord = parseChunkCoords(chunkId);
             var newChunk = chunk({
                 chunkX: newChunkCoord.x,

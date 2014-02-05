@@ -8,7 +8,8 @@ var UIManager = function() {
     var currentUi;
 
     var add = function(uiObj) {
-        var el = uiObj.el;
+        var el = uiObj.getNewEl();
+        el.style.display = "none";
         el.addEventListener(helpers.clickOrTouchEvent, function(evt) {
             var target = evt.target;
             var action = target.dataset.action;

@@ -1,6 +1,7 @@
 "use strict";
 
 var THREE = require("../vendor/three");
+var _ = require("underscore");
 
 var helpers = require("./helpers");
 var allUi = require("./ui");
@@ -8,6 +9,7 @@ var app = require("./app");
 var islandGen = require("./islandGen");
 var world = require("./world");
 var overheadControls = require("./overheadControls");
+var loadingScreen = require("./loadingScreen");
 
 var ui;
 var camera;
@@ -20,18 +22,31 @@ var rendererWidth = window.innerWidth;
 var rendererHeight = window.innerHeight;
 
 var loadGame = function(name) {
-    island.load(name);
+    loadingScreen.setText("Loading Chunks...<br>0%");
+    ui.show("loadingScreen");
+    island.load(name).then(function() {
+        ui.hide();
+    }, function() {
+        loadingScreen.setText("Error loading chunks!");
+        console.error("Something went wrong...");
+    }, function(progress) {
+        loadingScreen.setText("Loading Chunks...<br>" + progress + "%");
+    }).done();
 };
 
 var newGame = function(seed) {
     seed = seed || "1";
     console.log("Generating island...");
-    islandGen.generate("temp", seed).then(function(result) {
-        console.log("Island saved!!!", result);
-        loadGame("temp");
-    }, function(err) {
-        console.error("Could not save island...", err);
-    }).done();
+    loadingScreen.setText("Generating Island...");
+    ui.show("loadingScreen");
+    _.delay(function() {
+        islandGen.generate("temp", seed).then(function(result) {
+            console.log("Island saved!!!", result);
+            loadGame("temp");
+        }, function(err) {
+            console.error("Could not save island...", err);
+        }).done();
+    }, 100);
 };
 
 var onWindowResize = function() {
@@ -58,6 +73,8 @@ var setup = function() {
     cameraControls.setHeight(50);
     cameraControls.setRotation(helpers.toRad(135));
     cameraControls.setPitch(helpers.toRad(-40));
+    cameraControls.setXZ(300, 300);
+    window.lol = cameraControls;
     /*cameraControls.setHeight(200);
     cameraControls.setRotation(helpers.toRad(0));
     cameraControls.setPitch(helpers.toRad(-90));*/

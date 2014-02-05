@@ -12,10 +12,40 @@ body {
 button {
     width: 100%;
     height: 100%;
+    cursor: pointer;
 }
 
 #mainMenu .pad {
     height: 33.3%;
+}
+
+#loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 300%;
+    text-align: center;
+}
+
+#menuButton {
+    position: fixed;
+    background: rgba(255, 255, 255, 0.5);
+    top: 10px;
+    right: 10px;
+    padding: 2px 6px 6px 6px;
+    cursor: pointer;
+}
+
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
 .menu {
@@ -31,6 +61,14 @@ button {
 
 .pad {
     padding: 1%;
+}
+
+.icon-bar {
+    background: #444444;
+    display: block;
+    width: 30px;
+    height: 3px;
+    margin-top: 4px;
 }
 
 .minimap {
