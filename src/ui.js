@@ -3,8 +3,9 @@
 var helpers = require("./helpers");
 var uiManager = require("./uiManager");
 var uis = [
-    require("./mainMenu"),
-    require("./loadingScreen")
+    require("./ui/mainMenu"),
+    require("./ui/inGameMenu"),
+    require("./ui/loadingScreen")
 ];
 
 var ui = function() {
@@ -15,7 +16,7 @@ var ui = function() {
     }
 
     helpers.get("#menuButton")[0].addEventListener(helpers.clickOrTouchEvent, function() {
-        allUi.show("mainMenu");
+        allUi.show("inGameMenu");
     });
 
     return allUi;

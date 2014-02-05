@@ -9,7 +9,7 @@ var app = require("./app");
 var islandGen = require("./islandGen");
 var world = require("./world");
 var overheadControls = require("./overheadControls");
-var loadingScreen = require("./loadingScreen");
+var loadingScreen = require("./ui/loadingScreen");
 
 var ui;
 var camera;
@@ -65,6 +65,7 @@ var setup = function() {
     renderer.setSize(rendererWidth, rendererHeight);
 
     document.body.appendChild(renderer.domElement);
+    renderer.domElement.id = "threeCanvas";
     // this hack makes sure the canvas never "scrolls" off the screen.
     renderer.domElement.style.position = "fixed";
     window.addEventListener("resize", onWindowResize, false);
@@ -74,7 +75,6 @@ var setup = function() {
     cameraControls.setRotation(helpers.toRad(135));
     cameraControls.setPitch(helpers.toRad(-40));
     cameraControls.setXZ(300, 300);
-    window.lol = cameraControls;
     /*cameraControls.setHeight(200);
     cameraControls.setRotation(helpers.toRad(0));
     cameraControls.setPitch(helpers.toRad(-90));*/

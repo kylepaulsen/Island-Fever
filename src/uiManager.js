@@ -4,8 +4,10 @@ var helpers = require("./helpers");
 
 var UIManager = function() {
 
+    var uiElDictionary = {};
     var uiDictionary = {};
     var currentUi;
+    var screenCover = helpers.get("#screenCover")[0];
 
     var add = function(uiObj) {
         var el = uiObj.getNewEl();
@@ -22,24 +24,29 @@ var UIManager = function() {
             }
         });
         document.body.appendChild(el);
-        uiDictionary[el.id] = el;
+        uiDictionary[el.id] = uiObj;
+        uiElDictionary[el.id] = el;
     };
 
     var hide = function() {
         if (currentUi) {
             currentUi.style.display = "none";
+            screenCover.style.display = "none";
         }
     };
 
     var show = function(id) {
-        hide();
-        var uiToShow = uiDictionary[id];
+        var uiToShow = uiElDictionary[id];
         if (uiToShow) {
+            hide();
             uiToShow.style.display = "block";
+            if (uiDictionary[id].onOpen) {
+                uiDictionary[id].onOpen();
+            }
+            currentUi = uiToShow;
         } else {
             console.error("No such ui: ", id);
         }
-        currentUi = uiToShow;
     };
 
 

@@ -2,6 +2,8 @@
 
 var THREE = require("../vendor/three");
 
+var helpers = require("./helpers");
+
 var overheadControls = function(camera) {
 
     var speed = 1;
@@ -19,6 +21,7 @@ var overheadControls = function(camera) {
         middle: 2,
         right: 3
     };
+    var canvas = helpers.get("#threeCanvas")[0];
 
     var container = new THREE.Object3D();
     container.add(camera);
@@ -126,17 +129,17 @@ var overheadControls = function(camera) {
 
         if ("ontouchstart" in document.documentElement) {
             usesTouchEvents = true;
-            document.addEventListener("touchstart", mouseDown);
-            document.addEventListener("touchend", mouseUp);
-            document.addEventListener("touchmove", mouseMove);
+            canvas.addEventListener("touchstart", mouseDown);
+            canvas.addEventListener("touchend", mouseUp);
+            canvas.addEventListener("touchmove", mouseMove);
         } else {
-            document.addEventListener("mousedown", mouseDown);
-            document.addEventListener("mouseup", mouseUp);
-            document.addEventListener("mousemove", mouseMove);
+            canvas.addEventListener("mousedown", mouseDown);
+            canvas.addEventListener("mouseup", mouseUp);
+            canvas.addEventListener("mousemove", mouseMove);
 
-            document.addEventListener("mousewheel", mouseWheelHandler, false);
-            document.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
-            document.addEventListener("contextmenu", disableContextMenu, false);
+            canvas.addEventListener("mousewheel", mouseWheelHandler, false);
+            canvas.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
+            canvas.addEventListener("contextmenu", disableContextMenu, false);
 
             /*
             document.addEventListener("keydown", function(e) {
