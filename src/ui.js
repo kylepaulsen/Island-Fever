@@ -5,7 +5,8 @@ var uiManager = require("./uiManager");
 var uis = [
     require("./ui/mainMenu"),
     require("./ui/inGameMenu"),
-    require("./ui/loadingScreen")
+    require("./ui/loadingScreen"),
+    require("./ui/newMapScreen"),
 ];
 
 var ui = function() {

@@ -25,8 +25,8 @@ var world = function(scene) {
     // the percentage height where other block types show up.
     var waterHeight = 0.3;
     var sandHeight = 0.32;
-    var rockHeight = 1;
-    var snowHeight = 1;
+    var rockHeight = 0.6;
+    var snowHeight = 0.75;
 
     var mapData;
     var smallMap = minimap();

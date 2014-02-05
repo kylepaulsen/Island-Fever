@@ -7,6 +7,7 @@ var UIManager = function() {
     var uiElDictionary = {};
     var uiDictionary = {};
     var currentUi;
+    var previousUi;
     var screenCover = helpers.get("#screenCover")[0];
 
     var add = function(uiObj) {
@@ -16,7 +17,9 @@ var UIManager = function() {
             var target = evt.target;
             var action = target.dataset.action;
             if (action) {
-                if (uiObj[action]) {
+                if (action === "back" && previousUi) {
+                    show(previousUi);
+                } else if (uiObj[action]) {
                     uiObj[action](evt);
                 } else {
                     console.error("No action '"+action+"' in:", uiObj);
@@ -30,6 +33,7 @@ var UIManager = function() {
 
     var hide = function() {
         if (currentUi) {
+            previousUi = currentUi.id;
             currentUi.style.display = "none";
             screenCover.style.display = "none";
         }

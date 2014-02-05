@@ -13,7 +13,7 @@ var getNewEl = function() {
 };
 
 var newGame = function() {
-    window.app.newGame();
+    window.app.ui.show("newMapScreen");
 };
 var loadGame = function() {
     window.app.loadGame("temp");

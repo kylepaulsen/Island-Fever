@@ -75,7 +75,7 @@ var chunk = function(data) {
             //dirt: 126,
             dirt: 3,
             sand: 18,
-            rock: 19,
+            rock: 1,
             snow: 66
         };
         var wallConversions = {};
@@ -139,32 +139,32 @@ var chunk = function(data) {
                 var neHeight = getHeight(blockPosInWorld.x + 1, blockPosInWorld.z - 1);
 
                 if (nHeight > curHeight) {
-                    colors[0] -= 0x333333;
-                    colors[3] -= 0x333333;
+                    colors[0] -= 0x222222;
+                    colors[3] -= 0x222222;
                 }
                 if (eHeight > curHeight) {
-                    colors[2] -= 0x333333;
-                    colors[3] -= 0x333333;
+                    colors[2] -= 0x222222;
+                    colors[3] -= 0x222222;
                 }
                 if (sHeight > curHeight) {
-                    colors[2] -= 0x333333;
-                    colors[1] -= 0x333333;
+                    colors[2] -= 0x222222;
+                    colors[1] -= 0x222222;
                 }
                 if (wHeight > curHeight) {
-                    colors[0] -= 0x333333;
-                    colors[1] -= 0x333333;
+                    colors[0] -= 0x222222;
+                    colors[1] -= 0x222222;
                 }
                 if (nwHeight > curHeight) {
-                    colors[0] -= 0x333333;
+                    colors[0] -= 0x222222;
                 }
                 if (swHeight > curHeight) {
-                    colors[1] -= 0x333333;
+                    colors[1] -= 0x222222;
                 }
                 if (seHeight > curHeight) {
-                    colors[2] -= 0x333333;
+                    colors[2] -= 0x222222;
                 }
                 if (neHeight > curHeight) {
-                    colors[3] -= 0x333333;
+                    colors[3] -= 0x222222;
                 }
 
                 // x, z coords of block in chunk opengl space

@@ -61,6 +61,18 @@ var makeZeroFillMatrix = function(width, height) {
     return mat;
 };
 
+var makeRandomString = function(len) {
+    len = len || 10;
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var possibleLen = possible.length;
+    var t = len;
+    while (t-- > 0) {
+        text += possible.charAt(Math.floor(Math.random() * possibleLen));
+    }
+    return text;
+};
+
 module.exports = {
     get: get,
     clickOrTouchEvent: clickOrTouchEvent,
@@ -69,5 +81,6 @@ module.exports = {
     setProperty: setProperty,
     isJsObject: isJsObject,
     toRad: toRad,
-    makeZeroFillMatrix: makeZeroFillMatrix
+    makeZeroFillMatrix: makeZeroFillMatrix,
+    makeRandomString: makeRandomString
 };

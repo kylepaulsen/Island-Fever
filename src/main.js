@@ -34,15 +34,15 @@ var loadGame = function(name) {
     }).done();
 };
 
-var newGame = function(seed) {
+var newGame = function(name, seed) {
     seed = seed || "1";
     console.log("Generating island...");
     loadingScreen.setText("Generating Island...");
     ui.show("loadingScreen");
     _.delay(function() {
-        islandGen.generate("temp", seed).then(function(result) {
+        islandGen.generate(name, seed).then(function(result) {
             console.log("Island saved!!!", result);
-            loadGame("temp");
+            loadGame(name);
         }, function(err) {
             console.error("Could not save island...", err);
         }).done();
