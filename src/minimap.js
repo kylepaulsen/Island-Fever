@@ -16,7 +16,7 @@ var minimap = function () {
         var rows = data.rows;
         var cols = data.cols;
         var landAmplitude = data.landAmplitude;
-        var sandHeight = data.sandHeight * landAmplitude;
+        var waterHeight = data.waterHeight * landAmplitude;
 
         mapEl.width = cols;
         mapEl.height = rows;
@@ -31,7 +31,7 @@ var minimap = function () {
                 height = heightmap[x * rows + y];
                 color = 255 - height;
                 height = Math.floor(landAmplitude * height / 255);
-                if (height < sandHeight) {
+                if (height < waterHeight) {
                     ctx.fillStyle = "#000044";
                 } else {
                     ctx.fillStyle = "rgb(0,"+color+",0)";

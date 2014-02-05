@@ -1,6 +1,6 @@
 "use strict";
 
-var THREE = require("three");
+var THREE = require("../vendor/three");
 
 var chunk = function(data) {
     var chunkX = data.chunkX;
@@ -186,7 +186,7 @@ var chunk = function(data) {
         //return new THREE.Mesh(geom, new THREE.MeshBasicMaterial({wireframe: true, color: 0xff0000}));
         //return new THREE.Mesh(geom, new THREE.MeshBasicMaterial({map: terrainTexture}));
         return new THREE.Mesh(geom,
-            new THREE.MeshLambertMaterial({map: window.app.textures.terrain, shininess: 0}));
+            new THREE.MeshLambertMaterial({map: window.app.textures.terrain}));
     };
 
     return createMesh();

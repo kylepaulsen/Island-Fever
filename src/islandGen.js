@@ -9,16 +9,16 @@ var perlinNoise = require("../vendor/perlinNoise");
 
 // ISLAND GEN STATIC VARS ================
 var numElevationChangers = 5000;
-var elevationChangerLife = 50;
+var elevationChangerLife = 100;
 var tileMat;
-var numColumns = 800;
-var numRows = 800;
+var numColumns = 960;
+var numRows = 960;
 var numTileColumns = Math.floor(numColumns / 8);
 var numTileRows = Math.floor(numRows / 8);
-var elevationChangerMinXStartPos = Math.floor(1*numTileColumns/8);
-var elevationChangerMinYStartPos = Math.floor(1*numTileRows/8);
-var elevationChangerMaxXStartPos = Math.floor(7*numTileColumns/8);
-var elevationChangerMaxYStartPos = Math.floor(7*numTileRows/8);
+var elevationChangerMinXStartPos = Math.floor(3 * numTileColumns / 16);
+var elevationChangerMinYStartPos = Math.floor(3 * numTileRows / 16);
+var elevationChangerMaxXStartPos = Math.floor(13 * numTileColumns / 16);
+var elevationChangerMaxYStartPos = Math.floor(13* numTileRows / 16);
 var elevationChangers;
 var moveChoices = [
     {x: -1, y: 0},
@@ -88,7 +88,7 @@ ElevationChanger.prototype.move = function() {
     --this.life;
 };
 
-var normalizeAndAddNoise = function() {
+var findMinMax = function() {
     var tileMin = Infinity;
     var tileMax = -Infinity;
     var x = 0;
@@ -102,12 +102,33 @@ var normalizeAndAddNoise = function() {
         }
         ++x;
     }
-    var range = tileMax - tileMin;
+    return {
+        min: tileMin,
+        max: tileMax
+    };
+};
+
+var normalizeAndAddNoise = function() {
+    var tiles = findMinMax();
+    var range = tiles.max - tiles.min;
+    var x = 0;
+    var y;
     x = 0;
     while (x < numTileColumns) {
         y = 0;
         while (y < numTileRows) {
-            tileMat[x][y] = ((tileMat[x][y] - tileMin) / range) * heightNoise.getHeight(x, y);
+            tileMat[x][y] = ((tileMat[x][y] - tiles.min) / range) * heightNoise.getHeight(x, y);
+            ++y;
+        }
+        ++x;
+    }
+    tiles = findMinMax();
+    var coef = 1 / tiles.max;
+    x = 0;
+    while (x < numTileColumns) {
+        y = 0;
+        while (y < numTileRows) {
+            tileMat[x][y] = tileMat[x][y] * coef;
             ++y;
         }
         ++x;
@@ -148,15 +169,18 @@ var isInBounds = function(x, y) {
 };
 
 var boxBlur = function(px, py) {
+    var height = tileMat[px][py];
+    var blurRadius = Math.floor((1 - height) * 4) + 2;
     var sum = 0;
     var num = 0;
-    var x = -2;
-    var y;
+    var lowerBound = -blurRadius+1;
+    var upperBound = blurRadius;
 
-    // this does a 5x5 box blur.
-    while (x < 3) {
-        y = -2;
-        while (y < 3) {
+    var x = lowerBound;
+    var y;
+    while (x < upperBound) {
+        y = lowerBound;
+        while (y < upperBound) {
             if (isInBounds(px + x, py + y)) {
                 sum += tileMat[px + x][py + y];
                 ++num;

@@ -1,6 +1,6 @@
 "use strict";
 
-var THREE = require("three");
+var THREE = require("../vendor/three");
 
 var helpers = require("./helpers");
 var allUi = require("./ui");
@@ -23,9 +23,10 @@ var loadGame = function(name) {
     island.load(name);
 };
 
-var newGame = function() {
+var newGame = function(seed) {
+    seed = seed || "1";
     console.log("Generating island...");
-    islandGen.generate("temp", "1").then(function(result) {
+    islandGen.generate("temp", seed).then(function(result) {
         console.log("Island saved!!!", result);
         loadGame("temp");
     }, function(err) {
@@ -62,13 +63,13 @@ var setup = function() {
     cameraControls.setPitch(helpers.toRad(-90));*/
     scene.add(cameraControls.object);
 
-    var pointLight = new THREE.PointLight(0xFFFFFF);
+    var pointLight = new THREE.PointLight(0x666666);
     pointLight.position.x = -100;
     pointLight.position.y = 100;
     pointLight.position.z = 100;
     cameraControls.object.add(pointLight);
 
-    var ambientLight = new THREE.AmbientLight(0x666666);
+    var ambientLight = new THREE.AmbientLight(0x999999);
     scene.add(ambientLight);
 
     island = world(scene);

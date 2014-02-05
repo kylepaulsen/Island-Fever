@@ -1,6 +1,6 @@
 "use strict";
 
-var THREE = require("three");
+var THREE = require("../vendor/three");
 
 var overheadControls = function(camera) {
 
