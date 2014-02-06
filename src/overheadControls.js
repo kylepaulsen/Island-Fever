@@ -3,6 +3,7 @@
 var THREE = require("../vendor/three");
 
 var helpers = require("./helpers");
+var gestures = require("./gestures");
 
 var overheadControls = function(camera) {
 
@@ -50,13 +51,20 @@ var overheadControls = function(camera) {
         setRotation(rotationAngle);
     };
 
-    var mouseWheelHandler = function(e) {
-        // delta will be -1 when you scroll towards yourself and 1 when you scroll away.
-        var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-
+    var zoom = function(delta) {
         var newHeight = height - delta;
         newHeight = Math.max(Math.min(newHeight, 120), 10);
         setHeight(newHeight);
+    };
+
+    var rotate = function(delta) {
+        setRotation(rotationAngle + delta);
+    };
+
+    var mouseWheelHandler = function(e) {
+        // delta will be -1 when you scroll towards yourself and 1 when you scroll away.
+        var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+        zoom(delta);
     };
 
     var disableContextMenu = function(e) {
@@ -93,6 +101,9 @@ var overheadControls = function(camera) {
         }
         if (usesTouchEvents) {
             event.preventDefault();
+            if (event.targetTouches.length > 1) {
+                return false;
+            }
         }
 
         var x = event.clientX;
@@ -116,7 +127,7 @@ var overheadControls = function(camera) {
             container.position.x += deltaY * Math.sin(rotationAngle);
         } else if (isRightMouseDown) {
             var rotationAmount = mouseXDiff / 100;
-            setRotation(rotationAngle + rotationAmount);
+            rotate(rotationAmount);
         }
 
         lastMousePos.x = x;
@@ -132,6 +143,19 @@ var overheadControls = function(camera) {
             canvas.addEventListener("touchstart", mouseDown);
             canvas.addEventListener("touchend", mouseUp);
             canvas.addEventListener("touchmove", mouseMove);
+            gestures.setup(document);
+            gestures.onPinch(function(data) {
+                var delta = -data.distanceDelta;
+                if (delta > 0) {
+                    delta = 0.5;
+                } else {
+                    delta = -0.5;
+                }
+                zoom(delta);
+            });
+            gestures.onDoubleSwipe(function(data) {
+                rotate(data.midpointDelta.x / 100);
+            });
         } else {
             canvas.addEventListener("mousedown", mouseDown);
             canvas.addEventListener("mouseup", mouseUp);
