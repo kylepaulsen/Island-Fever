@@ -79,7 +79,7 @@ var world = function(scene) {
             }
             waterMesh = makeWaterLevel(mapData.rows, mapData.cols);
             scene.add(waterMesh);
-            heightmap = new Uint8Array(mapData.data);
+            heightmap = new Uint8Array(mapData.heightmap);
             computeValidChunks();
             middleChunk = {x: 0, y: 0};
             smallMap.draw({

@@ -80,6 +80,27 @@ input {
     transform: translate(-50%, -50%);
 }
 
+.mapEntry {
+    padding: 6px;
+    cursor: pointer;
+    border: 2px solid rgba(102, 187, 255, 0);
+}
+
+.mapEntryBox {
+    padding: 6px;
+    border: 1px solid #000;
+}
+
+.mapEntryName {
+    font-size: 24px;
+    border-bottom: 1px solid #000;
+    margin-bottom: 8px;
+}
+
+.mapEntrySeed {
+    font-style: italic;
+}
+
 .pad {
     padding: 0 1% 1% 1%;
 }
@@ -119,4 +140,29 @@ input {
     left: 10px;
     width: 200px;
     height: 200px;
+}
+
+@media (max-width: 1000px) {
+    body {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 100%;
+    }
+
+    input {
+        height: 40%;
+        font-size: 100%;
+    }
+
+    #menuButton {
+        padding: 6px 16px 12px 16px;
+    }
+
+    .icon-bar {
+        width: 50px;
+        height: 4px;
+        margin-top: 6px;
+    }
 }

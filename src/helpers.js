@@ -73,6 +73,13 @@ var makeRandomString = function(len) {
     return text;
 };
 
+var sanitize = function(str) {
+    str = str.replace("<", "&lt;");
+    str = str.replace(">", "&gt;");
+    str = str.replace("\"", "&quot;");
+    return str;
+};
+
 module.exports = {
     get: get,
     clickOrTouchEvent: clickOrTouchEvent,
@@ -82,5 +89,6 @@ module.exports = {
     isJsObject: isJsObject,
     toRad: toRad,
     makeZeroFillMatrix: makeZeroFillMatrix,
-    makeRandomString: makeRandomString
+    makeRandomString: makeRandomString,
+    sanitize: sanitize
 };

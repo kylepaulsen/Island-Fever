@@ -7,6 +7,8 @@ var uis = [
     require("./ui/inGameMenu"),
     require("./ui/loadingScreen"),
     require("./ui/newMapScreen"),
+    require("./ui/loadMapScreen"),
+    require("./ui/deleteMapScreen")
 ];
 
 var ui = function() {

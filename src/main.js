@@ -24,14 +24,17 @@ var rendererHeight = window.innerHeight;
 var loadGame = function(name) {
     loadingScreen.setText("Loading Chunks...<br>0%");
     ui.show("loadingScreen");
-    island.load(name).then(function() {
-        ui.hide();
-    }, function() {
-        loadingScreen.setText("Error loading chunks!");
-        console.error("Something went wrong...");
-    }, function(progress) {
-        loadingScreen.setText("Loading Chunks...<br>" + progress + "%");
-    }).done();
+    _.delay(function() {
+        island.load(name).then(function() {
+            ui.hide();
+            window.app.mapLoaded = name;
+        }, function() {
+            loadingScreen.setText("Error loading chunks!");
+            console.error("Something went wrong...");
+        }, function(progress) {
+            loadingScreen.setText("Loading Chunks...<br>" + progress + "%");
+        }).done();
+    }, 100);
 };
 
 var newGame = function(name, seed) {
@@ -99,7 +102,7 @@ var setup = function() {
         ui.show("mainMenu");
     }, function(err) {
         // something went wrong.
-        console.err(err);
+        console.error(err);
     }).done();
 };
 

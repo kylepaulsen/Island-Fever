@@ -15,7 +15,9 @@ var getNewEl = function() {
 };
 
 var generate = function() {
-    window.app.newGame(helpers.get("#newMapName")[0].value, helpers.get("#newMapSeed")[0].value);
+    var mapName = helpers.sanitize(helpers.get("#newMapName")[0].value);
+    var seed = helpers.sanitize(helpers.get("#newMapSeed")[0].value);
+    window.app.newGame(mapName, seed);
 };
 
 module.exports = {

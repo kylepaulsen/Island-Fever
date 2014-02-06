@@ -5,7 +5,8 @@ var _ = require("underscore");
 
 var helpers = require("./helpers");
 
-var keyvalDB = function(dbName, schemaDef, version) {
+var keyvalDB = function(dbName, schemaDef, version, options) {
+    options = options || {};
     var schema = {};
     if (_.isArray(schemaDef)) {
         _.each(schemaDef, function(store) {
@@ -177,6 +178,9 @@ var keyvalDB = function(dbName, schemaDef, version) {
                     evt.currentTarget.result.createObjectStore(storeObj.store, {keyPath: storeObj.key});
                 }
             });
+            if (options.onUpgrade) {
+                options.onUpgrade(evt.target.result);
+            }
         };
         return defer.promise;
     };

@@ -16,7 +16,7 @@ var newGame = function() {
     window.app.ui.show("newMapScreen");
 };
 var loadGame = function() {
-    window.app.loadGame("temp");
+    window.app.ui.show("loadMapScreen");
 };
 var options = function() {
     window.app.ui.show("options");

@@ -1,5 +1,7 @@
 "use strict";
 
+var q = require("q");
+
 var helpers = require("./helpers");
 
 var seededRandom = require("../vendor/seedRandom");
@@ -270,11 +272,18 @@ var storeIsland = function(name, seed) {
     var mapInfo = {
         seed: seed,
         created: Date.now(),
-        data: data.buffer,
         rows: numTileRows,
         cols: numTileColumns
     };
-    return window.app.db.maps.upsert(name, mapInfo);
+    var map = {
+        heightmap: data.buffer,
+        rows: numTileRows,
+        cols: numTileColumns
+    };
+    return q.all([
+        window.app.db.maps.upsert(name, map),
+        window.app.db.mapInfo.upsert(name, mapInfo)
+    ]);
 };
 
 var generateIsland = function(name, seed) {
