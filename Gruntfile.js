@@ -3,14 +3,22 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
         browserify: {
-            dist: {
+            src: {
                 files: {
                     "build/<%= pkg.name %>.js": ["src/**/*.js"]
                 },
                 options: {
                     transform: ["brfs"]
                 }
+            },
+            test: {
+                files: {
+                    "build/<%= pkg.name %>.test.js": ["test/spec/**/*.js"]
+                }
             }
+        },
+        jasmine: {
+            src: "build/<%= pkg.name %>.test.js"
         },
         uglify: {
             options: {
@@ -24,13 +32,28 @@ module.exports = function(grunt) {
             }
         },
         jshint: {
-            files: ["Gruntfile.js", "src/**/*.js", "test/**/*.js"],
-            options: {
-                jshintrc: true
+            options: grunt.file.readJSON(".jshintrc"),
+            src: {
+                src: ["Gruntfile.js", "src/**/*.js"],
+            },
+            test: {
+                src: ["test/**/*.js"],
+                options: {
+                    globals: {
+                        it: false,
+                        xit: false,
+                        describe: false,
+                        xdescribe: false,
+                        beforeEach: false,
+                        afterEach: false,
+                        expect: false,
+                        spyOn: false
+                    }
+                }
             }
         },
         watch: {
-            files: ["<%= jshint.files %>", "html/**/*"],
+            files: ["src/**/*", "html/**/*"],
             tasks: ["dev"]
         }
     });
@@ -39,9 +62,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-watch");
+    grunt.loadNpmTasks("grunt-contrib-jasmine");
 
-    // grunt.registerTask("test", ["jshint", "qunit"]);
+    grunt.registerTask("test", ["jshint", "browserify:test", "jasmine"]);
 
-    grunt.registerTask("dev", ["jshint", "browserify"]);
+    grunt.registerTask("dev", ["jshint", "browserify:src"]);
     grunt.registerTask("default", ["dev", "uglify"]);
 };

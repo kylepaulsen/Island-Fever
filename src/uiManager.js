@@ -3,7 +3,6 @@
 var helpers = require("./helpers");
 
 var UIManager = function() {
-
     var uiElDictionary = {};
     var uiDictionary = {};
     var currentUi;
@@ -76,7 +75,7 @@ var UIManager = function() {
         setPreviousScreen: setPreviousScreen
     };
 
-    window.app.ui = pub;
+    helpers.setProperty(window, "app.ui", pub);
 
     return pub;
 };

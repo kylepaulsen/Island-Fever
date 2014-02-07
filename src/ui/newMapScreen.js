@@ -23,5 +23,5 @@ var generate = function() {
 module.exports = {
     getNewEl: getNewEl,
     onOpen: onOpen,
-    generate: generate,
+    generate: generate
 };
