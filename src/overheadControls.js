@@ -143,7 +143,7 @@ var overheadControls = function(camera) {
             canvas.addEventListener("touchstart", mouseDown);
             canvas.addEventListener("touchend", mouseUp);
             canvas.addEventListener("touchmove", mouseMove);
-            gestures.setup(document);
+            gestures.setup(canvas);
             gestures.onPinch(function(data) {
                 var delta = -data.distanceDelta;
                 if (delta > 0) {
