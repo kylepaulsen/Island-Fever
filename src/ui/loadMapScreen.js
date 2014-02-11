@@ -6,6 +6,27 @@ var _ = require("underscore");
 var helpers = require("../helpers");
 
 var selected;
+
+var getSelectedEl = function() {
+    if (selected) {
+        var mapEntries = helpers.get("#loadMapList")[0].children;
+        return _.find(mapEntries, function(entry){
+            return helpers.sanitize(entry.dataset.name) === selected;
+        });
+    }
+};
+
+var selectMap = function(el) {
+    var mapEntries = helpers.get("#loadMapList")[0].children;
+    _.each(mapEntries, function(entry){
+        entry.style.border = "2px solid rgba(102, 187, 255, 0)";
+        entry.dataset.selected = "false";
+    });
+    el.style.border = "2px solid rgba(102, 187, 255, 1)";
+    el.dataset.selected = "true";
+    selected = helpers.sanitize(el.dataset.name);
+};
+
 var onOpen = function() {
     helpers.get("#screenCover")[0].style.display = "block";
     var mapsContainer = helpers.get("#loadMapList")[0];
@@ -16,6 +37,9 @@ var onOpen = function() {
             html += _.template(mapEntryTemplate, result);
         });
         mapsContainer.innerHTML = html;
+        if (selected) {
+            selectMap(getSelectedEl());
+        }
     });
     if (window.app.mapLoaded) {
         window.app.ui.setPreviousScreen("inGameMenu");
@@ -32,17 +56,6 @@ var load = function() {
     if (selected) {
         window.app.loadGame(selected);
     }
-};
-
-var selectMap = function(el) {
-    var mapEntries = helpers.get("#loadMapList")[0].children;
-    _.each(mapEntries, function(entry){
-        entry.style.border = "2px solid rgba(102, 187, 255, 0)";
-        entry.dataset.selected = "false";
-    });
-    el.style.border = "2px solid rgba(102, 187, 255, 1)";
-    el.dataset.selected = "true";
-    selected = helpers.sanitize(el.dataset.name);
 };
 
 var deleteMap = function() {

@@ -9,7 +9,7 @@ Here are some of the sweet features:
 
 I've always wanted to start coding some sort of three.js game that could also run in a mobile browser (specifically chrome for mobile). I tried hard to keep the code clean and fast with a sweet development environment.
 
-[Click Here to try it out!](https://dl.dropboxusercontent.com/u/2145242/islandFever/index.html)
+[Click Here to try it out!](http://www.kylepaulsen.com/islandFever/)
 
 Instructions
 ------------
@@ -23,7 +23,7 @@ If you want to try out the game, here are the controls:
 
 **On Mobile**
 * Drag with one finger to move the camera.
-* Drag with two fingers to rotate the camera. (May change this later...)
+* Drag with two fingers around a center point to rotate the camera.
 * Pinch in / out to zoom in/out.
 
 Development

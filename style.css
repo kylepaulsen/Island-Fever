@@ -55,6 +55,19 @@ input {
     cursor: pointer;
 }
 
+#helpButton {
+    position: fixed;
+    background: rgba(255, 255, 255, 0.5);
+    top: 10px;
+    right: 70px;
+    padding: 4px 10px;
+    cursor: pointer;
+}
+
+#helpScreen h2 {
+    margin-top: 0;
+}
+
 .centered {
     position: fixed;
     top: 50%;
@@ -99,6 +112,10 @@ input {
 
 .mapEntrySeed {
     font-style: italic;
+}
+
+.controls {
+    font-size: 14px;
 }
 
 .pad {
@@ -158,6 +175,11 @@ input {
 
     #menuButton {
         padding: 6px 16px 12px 16px;
+    }
+
+    #helpButton {
+        right: 116px;
+        padding: 15px 24px;
     }
 
     .icon-bar {

@@ -1,5 +1,7 @@
 "use strict";
 
+var _ = require("underscore");
+
 var helpers = require("./helpers");
 
 var UIManager = function() {
@@ -49,7 +51,10 @@ var UIManager = function() {
         var uiToShow = uiElDictionary[id];
         if (uiToShow) {
             hide();
-            uiToShow.style.display = "block";
+            // delay this so that mobile doesn't get the pressed look on a button that just rendered.
+            _.delay(function() {
+                uiToShow.style.display = "block";
+            }, 20);
             if (uiDictionary[id].onOpen) {
                 uiDictionary[id].onOpen.apply(null, args);
             }

@@ -153,8 +153,8 @@ var overheadControls = function(camera) {
                 }
                 zoom(delta);
             });
-            gestures.onDoubleSwipe(function(data) {
-                rotate(data.midpointDelta.x / 100);
+            gestures.onRotate(function(data) {
+                rotate(data.rotationDelta / 30);
             });
         } else {
             canvas.addEventListener("mousedown", mouseDown);

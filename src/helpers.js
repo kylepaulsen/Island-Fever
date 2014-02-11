@@ -6,7 +6,7 @@ var get = function(query) {
     return document.querySelectorAll(query);
 };
 
-var clickOrTouchEvent = "ontouchstart" in document.documentElement ? "touchstart" : "click";
+var clickOrTouchEvent = "ontouchstart" in document.documentElement ? "touchend" : "click";
 
 var createEl = function(name) {
     return document.createElement(name);
